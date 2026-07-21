@@ -1,0 +1,4 @@
+flask
+anthropic
+requests
+python-dotenv

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Compass</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <span class="brand-icon">🧭</span>
+      <span class="brand-name">Code Compass</span>
+    </div>
+    <div class="navbar-right">
+      <span class="model-badge">claude-sonnet-4-5</span>
+      <div class="status-dot" id="status-dot"></div>
+      <span class="status-text" id="status-text">Ready</span>
+    </div>
+  </nav>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <label class="section-label">Load Repository</label>
+        <div class="url-row">
+          <input type="text" id="repo-url" class="url-input"
+                 placeholder="https://github.com/owner/repo">
+          <button class="btn btn-primary" onclick="loadRepo()">Load</button>
+        </div>
+        <div class="action-row">
+          <button class="btn btn-danger" onclick="resetSession()">↺ New Session</button>
+        </div>
+      </div>
+
+      <div class="sidebar-section sidebar-files">
+        <div class="section-label-row">
+          <label class="section-label">Files</label>
+          <span class="file-count" id="file-count"></span>
+        </div>
+        <div class="file-list" id="file-list">
+          <div class="file-list-empty">No repository loaded yet.</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="chat-panel">
+      <div class="chat-history" id="chat-history">
+        <div class="chat-welcome">
+          <p>Load a repository from the sidebar, then ask anything about the codebase.</p>
+        </div>
+      </div>
+      <div class="chat-input-bar">
+        <input type="text" id="question" class="chat-input"
+               placeholder="Ask a question about the codebase…"
+               onkeydown="if(event.key==='Enter') askQuestion()">
+        <button class="btn btn-primary" onclick="askQuestion()">Ask</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
