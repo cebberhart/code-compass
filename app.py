@@ -28,7 +28,7 @@ def load_repo():
     if not url:
         return jsonify({'error': 'No URL provided'}), 400
     try:
-        files = get_repo_files(url)
+        files, was_capped = get_repo_files(url)
         if not files:
             return jsonify({'error': 'No supported files found in this repository'}), 400
         summary_texts = summarize_all_files(files)
@@ -50,7 +50,7 @@ def load_stream():
 
     def generate():
         try:
-            files = get_repo_files(url)
+            files, was_capped = get_repo_files(url)
             if not files:
                 yield f"data: {json.dumps({'error': 'No supported files found'})}\n\n"
                 return
@@ -63,7 +63,7 @@ def load_stream():
             store['files'] = files
             store['summaries'] = summaries
             store['history'] = []
-            yield f"data: {json.dumps({'done': True, 'file_count': total})}\n\n"
+            yield f"data: {json.dumps({'done': True, 'file_count': total, 'was_capped': was_capped})}\n\n"
         except Exception as e:
             yield f"data: {json.dumps({'error': str(e)})}\n\n"
 

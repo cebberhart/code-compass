@@ -107,11 +107,13 @@ async function loadRepo() {
 
         if (data.done) {
           hideProgress();
+          const capMsg = data.was_capped ? ' (capped at 30)' : '';
           setStatus('Loaded ' + data.file_count + ' files');
           document.getElementById('file-count').textContent =
             data.file_count + ' files';
           addMessage('Code Compass',
-            'Repository loaded. Ask me anything about the codebase.', 'ai');
+            'Repository loaded' + (data.was_capped ? ' — showing first 30 files out of more available.' : '.') +
+            'Ask me anything about the codebase.', 'ai');
         }
       }
     }
