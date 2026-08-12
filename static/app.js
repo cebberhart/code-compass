@@ -165,3 +165,74 @@ async function resetSession() {
     "<div class='chat-welcome'><p>Load a repository from the sidebar, then ask anything about the codebase.</p></div>";
   setStatus('Session cleared');
 }
+
+async function uploadFiles(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  setStatus('Uploading ' + file.name + '…', 'loading');
+  document.getElementById('file-count').textContent = '';
+  document.getElementById('file-list').innerHTML =
+    "<div class='file-list-empty'>Processing zip file…</div>";
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await fetch('/upload', {
+      method: 'POST',
+      body: formData
+    });
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let fileCards = [];
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = JSON.parse(line.slice(6));
+
+        if (data.error) {
+          setStatus('Error: ' + data.error, 'error');
+          hideProgress();
+          document.getElementById('file-list').innerHTML =
+            "<div class='file-list-empty'>Failed to process zip.</div>";
+          return;
+        }
+
+        if (data.progress) {
+          setStatus(`Summarizing file ${data.progress} of ${data.total}…`, 'loading');
+          updateProgress(data.progress, data.total);
+          document.getElementById('file-count').textContent =
+            `${data.progress} of ${data.total}`;
+          fileCards.push({ path: data.file, summary: data.summary });
+          document.getElementById('file-list').innerHTML =
+            fileCards.map(renderFileCard).join('');
+        }
+
+        if (data.done) {
+          hideProgress();
+          setStatus('Loaded ' + data.file_count + ' files');
+          document.getElementById('file-count').textContent =
+            data.file_count + ' files';
+          addMessage('Code Compass',
+            'Zip file loaded. Ask me anything about the codebase.', 'ai');
+        }
+      }
+    }
+  } catch (err) {
+    hideProgress();
+    setStatus('Error: ' + err.message, 'error');
+    document.getElementById('file-list').innerHTML =
+      "<div class='file-list-empty'>Failed to process zip.</div>";
+  }
+}

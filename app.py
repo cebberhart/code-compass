@@ -81,9 +81,11 @@ def upload_files():
     if not uploaded_file.filename.endswith('.zip'):
         return jsonify({'error': 'Only zip files are supported'}), 400
 
+    zip_bytes = uploaded_file.read()
+
+    
     def generate():
         try:
-            zip_bytes = uploaded_file.read()
             zf = zipfile.ZipFile(io.BytesIO(zip_bytes))
             SUPPORTED = ('.py', '.js', '.ts', '.md')
             names = [
