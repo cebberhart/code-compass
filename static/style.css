@@ -225,6 +225,39 @@ body {
   border: 1px solid var(--border);
   border-bottom-left-radius: 4px;
 }
+/* Formatted AI answers (Markdown) */
+.msg-bubble > :first-child { margin-top: 0; }
+.msg-bubble > :last-child { margin-bottom: 0; }
+.msg-bubble p { margin: 0 0 0.75em; }
+.msg-bubble h1, .msg-bubble h2, .msg-bubble h3, .msg-bubble h4 {
+  margin: 1em 0 0.4em;
+  line-height: 1.3;
+}
+.msg-bubble h1 { font-size: 1.25em; }
+.msg-bubble h2 { font-size: 1.15em; }
+.msg-bubble h3, .msg-bubble h4 { font-size: 1.05em; }
+.msg-bubble ul, .msg-bubble ol { margin: 0 0 0.75em; padding-left: 1.4em; }
+.msg-bubble li { margin: 0.25em 0; }
+.msg-bubble code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.9em;
+  background: rgba(127, 127, 127, 0.15);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.msg-bubble pre {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  margin: 0 0 0.75em;
+}
+.msg-bubble pre code { background: none; padding: 0; font-size: 0.85em; }
+.msg-bubble a { color: var(--accent-blue); }
+.msg-bubble table { border-collapse: collapse; margin: 0 0 0.75em; }
+.msg-bubble th, .msg-bubble td { border: 1px solid var(--border); padding: 4px 8px; }
+
 .msg-time { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
 
 /* CHAT INPUT */

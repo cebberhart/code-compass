@@ -24,6 +24,21 @@ function hideProgress() {
   bar.style.width = '0%';
 }
 
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// AI answers come back as Markdown: convert to HTML, then sanitize it,
+// since answers can quote code from untrusted repositories.
+function formatText(text, type) {
+  if (type === 'ai' && window.marked && window.DOMPurify) {
+    return DOMPurify.sanitize(marked.parse(text, { breaks: true }));
+  }
+  return escapeHtml(text).replace(/\n/g, '<br>');
+}
+
 function addMessage(sender, text, type) {
   const history = document.getElementById('chat-history');
   const welcome = history.querySelector('.chat-welcome');
@@ -33,7 +48,7 @@ function addMessage(sender, text, type) {
   msg.className = 'msg ' + type;
   msg.innerHTML = `
     <div class="msg-sender">${sender}</div>
-    <div class="msg-bubble">${text}</div>
+    <div class="msg-bubble">${formatText(text, type)}</div>
     <div class="msg-time">${getTime()}</div>
   `;
   history.appendChild(msg);
